@@ -6,16 +6,106 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<!-- 	 <video id="video" src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4"></video> -->
 
-  <div class="wrapper">
+<!--   <div class="wrapper">
     <video class="flex" width="765" height="430" src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4" controls></video>
     <div class="speed">
       <div class="speed-bar">1×</div>
     </div>
-  </div>
+  </div> -->
+	<div id="container">
+      <video id="video" src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4"></video>
+      <div class="options">
+        <div id="progress">
+          <div id="progress-bar"></div>
+        </div>
+        <div class="bottom-options">
+          <div id="play-pause" class="material-icons">play_arrow</div>
+          <div class="right-options">
+            <div id="timer">0s</div>
+            <div id="duration">0s</div>
+            <div class="position-controls">
+              <span
+                class="material-icons"
+                style="transform: rotate(180deg)"
+                onclick="backward()"
+                >fast_forward</span
+              >
+              <span class="material-icons" onclick="forward()"
+                >fast_forward</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
 <script  src="./script.js">
   //Your code goes here
+	const video = document.getElementById("video");
+const progressBar = document.getElementById("progress-bar");
+const playPauseButton = document.getElementById("play-pause");
+const timer = document.getElementById("timer");
+const duration = document.getElementById("duration");
+const progress = document.getElementById("progress");
+
+video.addEventListener("loadeddata", () => {
+  duration.innerText = `${parseInt(video.duration)}s`;
+});
+
+progress.addEventListener("click", (e) => {
+  const position = e.clientX - 20;
+  const percentage = position / progress.clientWidth;
+
+  const currentTime = percentage * video.duration;
+  video.currentTime = currentTime;
+});
+
+video.addEventListener("ended", () => {
+  playPauseButton.innerText = "play_arrow";
+});
+/**
+ *
+ * Options
+ * progress-bar
+ * play - pause button
+ * timer display
+ * volume control
+ * fast forward
+ * backward
+ */
+// timeupdate event which can applied for video/audio elements.
+playPauseButton.addEventListener("click", (e) => {
+  if (playPauseButton.innerText === "play_arrow") {
+    // we need to play the video
+    playPauseButton.innerText = "pause";
+    video.play();
+  } else {
+    // we need to pause the video.
+    playPauseButton.innerText = "play_arrow";
+    video.pause();
+  }
+});
+
+video.addEventListener("timeupdate", () => {
+  const totalTime = video.duration;
+  const currentTime = video.currentTime;
+  const percentageCovered = (currentTime / totalTime) * 100;
+
+  progressBar.style.width = `${percentageCovered}%`;
+  timer.innerText = `${parseInt(currentTime)}s`;
+});
+
+// video.play();
+
+function forward() {
+  video.currentTime += 3;
+}
+
+function backward() {
+  video.currentTime -= 3;
+}
 </script>
 </body>
 </html>
